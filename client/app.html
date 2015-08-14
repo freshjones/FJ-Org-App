@@ -1,0 +1,149 @@
+<template name="mainLayout">
+  <header class="container"><h1>Roles</h1></header>
+  
+    {{>Template.dynamic template=content}}
+    {{>Template.dynamic template=sidebar}}
+  
+  <footer></footer>
+</template>
+
+<template name="blogHome">
+
+  <a class="btn btn-default" href="/role/add">Add</a>
+  
+  <div id="tree" class="tree">
+    {{> roles}}
+  </div>
+
+</template>
+
+<template name="roles">
+   {{#each roles}}
+      <ul>{{> role}}</ul>
+    {{/each}}
+</template>
+
+<template name="role">
+    <li class="draggable">
+      <a href={{pathEdit}} class="droppable {{level}}" data-id="{{_id}}">{{title}}
+       {{#if team.count}}
+          <dl>
+            {{#each team}}
+              <dt>{{fname}}</dt>
+            {{/each}}
+          </dl>
+       {{/if}}
+      </a>
+      {{#if roles.count}}
+        <ul>
+          {{#each roles}}
+            {{> role}}
+          {{/each}}
+        </ul>
+      {{/if}}
+    </li>
+</template>
+
+<template name="blogPost">
+
+    <a class="btn btn-default btn-xs" href="/">Back</a>
+    <a href="/{{role._id}}/edit">Edit</a>
+    {{#if Template.subscriptionsReady}}
+          <h3>Title: {{role.title}}</h3>
+          <h3>Category: {{role.level}}</h3>
+          <h3>Parent: {{#if role.parent}}{{role.parent}}{{else}}Top{{/if}}</h3>
+          <p>Description: {{role.description}}</p>
+    {{else}}
+        <p>Loading...</p>
+    {{/if}}
+  </template>
+
+  <template name="blogPostEdit">
+    
+    <div class="container" role="main">
+
+    <a class="btn btn-info btn-xs" href="/">Back</a>
+   <form>
+
+    <div class="form-group">
+      <label >Title</label>
+      <input type="text" class="form-control" name="title" value="{{role.title}}" />
+    </div>
+
+
+    <div class="form-group">
+      <label>Level</label>
+      <select name="level" class="form-control">
+        <option value="board" {{selectedIfEquals "board" role.level }}>Board</option>
+        <option value="chief" {{selectedIfEquals "chief" role.level }}>Chief</option>
+        <option value="director" {{selectedIfEquals "director" role.level }}>Director</option>
+        <option value="manager" {{selectedIfEquals "manager" role.level }}>Managers</option>
+        <option value="technician" {{selectedIfEquals "technician" role.level }}>Technician</option>
+        <option value="operator" {{selectedIfEquals "operator" role.level }}>Operator</option>
+      </select>
+    </div> 
+
+    <div class="form-group">
+      <label>Reports To:</label>
+      <select name="parent" class="form-control">
+        <option value="">--Top Level--</option>
+        {{#each roles}}
+          <option value="{{_id}}" {{selectedIfEquals _id role.parent }}>{{title}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Assigned To:</label>
+        {{#each team}}
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" class="assigned" value="{{_id}}" {{checkedIfEquals _id role.assigned }}>
+            {{name}}
+          </label>
+        </div>
+        {{/each}}
+    </div>
+
+    <div class="form-group">
+      <label>Description:</label>
+      <textarea name="description" class="form-control" rows="15">{{role.description}}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Responsibilities:</label>
+      <textarea name="responsibilities" class="form-control" rows="15">{{role.responsibilities}}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Qualifications:</label>
+      <textarea name="qualificiations" class="form-control" rows="15">{{role.qualificiations}}</textarea>
+    </div>
+
+    <div class="form-group">
+      <input type="submit" name="submit" value="submit" class="btn btn-primary">
+    </div>
+
+   </form>
+ </div>
+</template>
+
+<template name="blogPostAdd">
+  <a href="/">Back</a>
+ <form>
+  <input type="text" name="title" value="{{role.title}}" /><br/>
+  <select name="level">
+    <option value="board">Board</option>
+    <option value="chief">Chief</option>
+    <option value="director">Director</option>
+    <option value="manager">Managers</option>
+    <option value="technician">Technician</option>
+    <option value="operator">Operator</option>
+  </select><br/>
+  <textarea name="description">{{role.description}}</textarea><br/>
+  <input type="submit" name="submit" value="submit">
+ </form>
+</template>
+
+
+
