@@ -1,0 +1,59 @@
+<template name="departmentList">
+
+  	<header><h1>Departments</h1></header>
+
+  	<div>
+		<button id="btn-add-dept" class="btn btn-info">Add Department</button>
+		<ul>
+		{{#each departments}}
+            <li>{{department}} (<a class="btn-edit-dept">edit</a> | <a class="btn-delete-dept">delete</a>)</li>
+        {{/each}}
+        </ul>
+	</div>
+
+</template>
+
+
+<template name="departmentAdd">
+	
+	<div role="sidebar">
+
+		<form id="add-department">
+
+			<div class="form-group">
+			  <label>Department</label>
+			  <input type="text" class="form-control" name="department" value="" />
+			</div>
+
+			<div class="form-group">
+      			<input type="submit" name="submit" value="submit" class="btn btn-primary">
+    		</div>
+
+		</form>
+
+	</div>
+
+
+</template>
+
+<template name="departmentEdit">
+	
+	<div role="sidebar">
+
+		<form id="edit-department">
+
+			<div class="form-group">
+			  <label>Department</label>
+			  <input type="text" class="form-control" name="department" value="{{department}}" />
+			</div>
+
+			<div class="form-group">
+      			<input type="submit" name="submit" value="submit" class="btn btn-primary">
+    		</div>
+
+		</form>
+
+	</div>
+
+
+</template>

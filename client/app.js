@@ -44,16 +44,47 @@ Template.role.helpers({
 
 Template.role.events({
 
-  'mouseenter a.droppable': function (event) 
+  'mouseenter .droppable': function (event) 
   {
       event.stopPropagation();
       $(event.currentTarget).addClass('widen');
   },
-  'mouseleave a.droppable': function (event) 
+  'mouseleave .droppable': function (event) 
   {
       event.stopPropagation();
       $(event.currentTarget).removeClass('widen');
-  }
+  },
+  'click .delete': function (event) 
+  {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      var thisParent = this.parent;
+      var thisID = this._id;
+
+      var children = Roles.find({parent:thisID}).fetch();
+
+      if(children.length > 0 )
+      {
+        $.each( children, function() 
+        {
+          Roles.update(this._id, { $set:{parent:thisParent} } );
+        });
+      }
+
+      Roles.update(this._id, { $set:{parent:'unset'} } );
+
+  },
+  'click .node': function (event) 
+  {
+      event.preventDefault();
+      event.stopPropagation();
+
+      FlowRouter.go('/role/' + this._id);
+      
+  },
+
+
 
 
 });
@@ -95,7 +126,7 @@ Template.role.rendered = function() {
 
         var thisItem = $(this);
 
-        var child = thisItem.children('a');
+        var child = thisItem.children('div');
         var childId = child.data("id");
 
         ui.helper.data('child', childId);
@@ -142,25 +173,6 @@ Template.role.rendered = function() {
   
 }
 
-/*
-Template.blogHome.onCreated(function() {
-  var self = this;
-  self.autorun(function() {
-    self.subscribe('roles');  
-  });
-});
-*/
-
-/*
-Template.blogPost.onCreated(function() {
-  var self = this;
-  self.autorun(function() {
-    var roleId = FlowRouter.getParam('roleId');
-    self.subscribe('singlePost', roleId);  
-  });
-});
-*/
-
 Template.blogPost.helpers({
   role: function() {
     var roleId = FlowRouter.getParam('roleId');
@@ -182,6 +194,8 @@ Template.blogPostEdit.helpers({
   {
     return Team.find({});
   }
+
+
 
 });
 
@@ -217,77 +231,90 @@ Template.blogPostEdit.events({
  		
  		var roleId = FlowRouter.getParam('roleId');
 	 	
-	 	   form={};
-	    
-	       $.each( $(event.target).serializeArray(), function() {
-	        form[this.name] = this.value;
-	       });
+    form={};
+  
+    $.each( $(event.target).serializeArray(), function() {
+      form[this.name] = this.value;
+    });
 
+    var assigned=[];
 
-        var assigned=[];
-        $('.assigned:checked').each(function(){
-            assigned.push( $(this).val() );
-        });
+    $('.assigned:checked').each(function(){
+        assigned.push( $(this).val() );
+    });
 
-        form['assigned'] = assigned;
+    form['assigned'] = assigned;
 
-      	Roles.update(roleId, {$set:form} );
+  	Roles.update(roleId, {$set:form} );
 
-	  	  //FlowRouter.go('/' + roleId);
-
-        FlowRouter.go('/');
+	  //FlowRouter.go('/' + roleId);
     
+    FlowRouter.go('/');
+    
+  },
+
+  'click #add-responsibility': function (event) 
+  {
+
+    event.preventDefault();
+
+    var roleId = FlowRouter.getParam('roleId');
+    var role = Roles.findOne({_id : roleId});
+    var responsibility = $('.new-responsibility').val();
+
+    update={};
+    update.responsibility = [];
+
+    if(typeof role.responsibility == 'object' && role.responsibility.length > 0)
+    {
+      update.responsibility.push.apply(update.responsibility, role.responsibility);
     }
 
-});
-
-
-/*
-Template.body.helpers({
-
-	roles: function () {
-    	return Roles.find({});
+    if(responsibility.length)
+    {
+      update.responsibility.push(responsibility);
     }
 
-});
+    if(update.responsibility.length > 0)
+    {
+      Roles.update(roleId, {$set:update} ); 
+    }
 
+    $('.new-responsibility').val('');
 
-Template.body.events({
+      
+  },
 
-    "submit .new-role": function (event) {
-      // Prevent default browser form submit
-      event.preventDefault();
+  'click #add-qualification': function (event) 
+  {
+      event.preventDefault(); 
+  },
 
-      // Get value from form element
-      var title = event.target.title.value;
- 
-      // Insert a task into the collection
+  'click .delete-responsibility': function (event) 
+  {
+      event.preventDefault(); 
 
-      Roles.insert({
-        title: title,
+      var roleId = FlowRouter.getParam('roleId');
+
+      var li = $(event.target).parent();
+
+      li.remove();
+
+      update={};
+      update.responsibility = [];
+
+      $('#responsibilities li').each(function(i)
+      {
+        var item = $(this).find('.item').text();
+        update.responsibility.push(item);
       });
 
-      // Clear form
-      event.target.title.value = "";
+      if(update.responsibility.length > 0)
+      {
+        Roles.update(roleId, {$set:update} ); 
+      }
 
-    }
-
-  });
+  }
 
 
-  Template.role.events({
-
-    "click .text": function (event) 
-    {
-      alert('yes');
-
-    },
-
-    "click .delete": function (event) 
-    {
-    	event.preventDefault();
-      	Roles.remove(this._id);
-    }
-
-  });
-  */
+});

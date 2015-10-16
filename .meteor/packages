@@ -11,3 +11,5 @@ kadira:blaze-layout
 twbs:bootstrap
 mizzao:jquery-ui
 dburles:collection-helpers
+underscore
+underscorestring:underscore.string

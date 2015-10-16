@@ -1,0 +1,12 @@
+<template name="standardsList">
+
+  	<header><h1>Standards</h1></header>
+  	<div>
+		<button id="btn-add-std" class="btn btn-info">Add Standard</button>
+		<ul>
+		{{#each standards}}
+            <li>{{standard}} (<a class="btn-edit-std">edit</a> | <a class="btn-delete-std">delete</a>)</li>
+        {{/each}}
+        </ul>
+	</div>
+</template>

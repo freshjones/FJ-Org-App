@@ -1,16 +1,29 @@
 <template name="mainLayout">
-  <header class="container"><h1>Roles</h1></header>
-  
-    {{>Template.dynamic template=content}}
-    {{>Template.dynamic template=sidebar}}
-  
-  <footer></footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">{{>Template.dynamic template=content}}</div>
+        <div class="col-md-4">{{>Template.dynamic template=sidebar}}</div>
+      </div>
+    </div>
 </template>
 
 <template name="blogHome">
 
   <a class="btn btn-default" href="/role/add">Add</a>
   
+  <div class="row">
+    <div class="col-md-1">
+      <ul class="levels col-2">
+        <li class="board">Board Level</li>
+        <li class="chief">Chief Level</li>
+        <li class="director">Director Level</li>
+        <li class="manager">Manager Level</li>
+        <li class="technician">Technician Level</li>
+        <li class="operator">Operator Level</li>
+      </ul>
+    </div>
+  </div>
+
   <div id="tree" class="tree">
     {{> roles}}
   </div>
@@ -25,7 +38,7 @@
 
 <template name="role">
     <li class="draggable">
-      <a href={{pathEdit}} class="droppable {{level}}" data-id="{{_id}}">{{title}}
+      <div class="node droppable {{level}}" data-id="{{_id}}">{{title}}
        {{#if team.count}}
           <dl>
             {{#each team}}
@@ -33,7 +46,8 @@
             {{/each}}
           </dl>
        {{/if}}
-      </a>
+       <a class="delete" href="">[X]</a>
+      </div>
       {{#if roles.count}}
         <ul>
           {{#each roles}}
@@ -46,21 +60,85 @@
 
 <template name="blogPost">
 
-    <a class="btn btn-default btn-xs" href="/">Back</a>
-    <a href="/{{role._id}}/edit">Edit</a>
-    {{#if Template.subscriptionsReady}}
-          <h3>Title: {{role.title}}</h3>
-          <h3>Category: {{role.level}}</h3>
-          <h3>Parent: {{#if role.parent}}{{role.parent}}{{else}}Top{{/if}}</h3>
-          <p>Description: {{role.description}}</p>
-    {{else}}
-        <p>Loading...</p>
-    {{/if}}
+    <div class="row-list">
+      <div class="row">
+        <div class="">
+
+          <a class="btn btn-default btn-xs" href="/">Back</a>
+          <a href="/role/{{role._id}}/edit">Edit</a>
+          
+          <h2>{{role.title}}</h2>
+
+          <div class="row">
+              <div class="col-md-2">
+                <p>Reports To:</p>
+              </div>
+              <div class="col-md-10">
+                <p>{{role.parentObj.title}}</p>
+              </div>
+          </div>
+
+          <div class="row">
+              <div class="col-md-2">
+                <p>Result Statement:</p>
+              </div>
+              <div class="col-md-10">
+                <p><strong>I am responsible for producing the following result</strong></p>
+                <p>{{role.description}}</p>
+              </div>
+          </div>
+
+          {{#if role.childrenObj.count}}
+            <div class="row">
+                <div class="col-md-2">
+                  <p>Reporting Positions:</p>
+                </div>
+                <div class="col-md-10">
+                    <p><strong>These positions report directly to me and are responsible for producing the indicated results:</strong></p>
+                
+                    {{#each role.childrenObj}}
+                      <div class="row">
+                          <div class="col-md-2">
+                            <p>Position:</p>
+                          </div>
+                          <div class="col-md-10">
+                            <p><b>{{title}}</b></p>
+                          </div>
+                   
+                          <div class="col-md-2">
+                            <p>Result:</p>
+                          </div>
+                          <div class="col-md-10">
+                            <p>{{description}}</p>
+                          </div>
+                      </div>
+                    {{/each}}
+           
+                </div>
+            </div>
+          {{/if}}
+          
+          <div class="row">
+              <div class="col-md-2">
+                <p>Work Responsibilities:</p>
+              </div>
+              <div class="col-md-10">
+                <p>{{breaklines role.responsibilities}}</p>
+              </div>
+
+          </div>
+
+         
+      
+        </div>
+      </div>
+    </div>
+    
   </template>
 
   <template name="blogPostEdit">
     
-    <div class="container" role="main">
+    <div>
 
     <a class="btn btn-info btn-xs" href="/">Back</a>
    <form>
@@ -106,18 +184,43 @@
     </div>
 
     <div class="form-group">
-      <label>Description:</label>
-      <textarea name="description" class="form-control" rows="15">{{role.description}}</textarea>
+      <label>Result Statement - I am responsible for producing the following result:</label>
+      <textarea name="description" class="form-control" rows="5">{{role.description}}</textarea>
     </div>
 
-    <div class="form-group">
-      <label>Responsibilities:</label>
-      <textarea name="responsibilities" class="form-control" rows="15">{{role.responsibilities}}</textarea>
+    <div class="form-inline">
+      
+      <p>{{role.responsibilities}}</p>
+
+      <div class="form-group">
+
+        <label>Responsibilities:</label>
+        
+        <ul id="responsibilities">
+          {{#each role.responsibility}}
+              <li><span class="item">{{this}}</span>&nbsp;<a href="" class="delete-responsibility">Delete</a></li>
+          {{/each}}
+        </ul>
+        
+        {{#if maxObjects role.responsibility 30}}
+          <input type="text" class="new-responsibility form-control" name="responsibility" value="" />
+          <input type="button" value="add" id="add-responsibility" class="btn btn-primary">
+        {{/if}}
+
+      </div>
+
     </div>
 
-    <div class="form-group">
-      <label>Qualifications:</label>
-      <textarea name="qualificiations" class="form-control" rows="15">{{role.qualificiations}}</textarea>
+    <div class="form-inline">
+      
+      <p>{{role.qualificiations}}</p>
+
+      <div class="form-group">
+        <label>Qualifications:</label>
+        <input type="text" class="form-control" name="qualificiation" value="" />
+        <input type="button" value="add" id="add-qualification" class="btn btn-primary">
+      </div>
+
     </div>
 
     <div class="form-group">

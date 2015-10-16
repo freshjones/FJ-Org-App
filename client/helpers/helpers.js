@@ -20,3 +20,24 @@ Template.registerHelper("checkedIfEquals",function(id,assigned){
 	
 	return checked;
 });
+
+
+Template.registerHelper("maxObjects",function(list,allowed)
+{
+	if( typeof list == 'undefined' || ( typeof list == 'object' && list.length < allowed ) )
+	{	
+		return true;
+	}
+	return false;
+});
+
+
+
+UI.registerHelper('breaklines', function(text, options) {
+  text = s.escapeHTML(text);
+  text = text.replace(/(\r\n|\n|\r)/gm, '<br/>');
+  return new Spacebars.SafeString(text);
+});
+
+
+

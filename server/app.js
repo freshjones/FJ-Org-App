@@ -2,6 +2,14 @@ Meteor.publish('roles', function() {
 	return Roles.find({});
 });
 
+Meteor.publish('standards', function() {
+	return Standards.find({});
+});
+
+Meteor.publish('departments', function() {
+	return Departments.find({});
+});
+
 Meteor.publish('team_members', function() {
 	return Team.find({});
 });

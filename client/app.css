@@ -41,7 +41,7 @@
     */
 }
 
-.tree li a {
+.tree li div.node {
 line-height: 1.5;
 	}
 
@@ -93,7 +93,7 @@ right connector from last child*/
     width: 0; height: 20px;
 }
 
-.tree li a{
+.tree li .node{
     height: 100px;
     white-space:normal;
     overflow: hidden;
@@ -115,83 +115,118 @@ right connector from last child*/
     */
 }
 
-.tree li a
+.tree li .node
 {
 	width: 500px;
 }
 
-.tree li li a
+.tree li li .node
 {
 	width: 250px;
 }
 
-.tree li li li a
+.tree li li li .node
 {
 	width: 100px;
 }
 
-.tree li li li li a
+.tree li li li li .node
 {
 	width: 30px;
 }
 
 
-.tree li li li li a.widen
+.tree li li li li div.widen
 {
     width: 100px;
 }
 
 /*Time for some hover effects*/
 /*We will apply the hover effect the the lineage of the element also*/
-.tree li a:hover, .tree li a:hover+ul li a {
+.tree li .node:hover, .tree li .node:hover+ul li .node {
     background: #cbcbcb; color: #000;
 }
 
 
 /*Connector styles on hover*/
-.tree li a:hover+ul li::after, 
-.tree li a:hover+ul li::before, 
-.tree li a:hover+ul::before, 
-.tree li a:hover+ul ul::before{
+.tree li .node:hover+ul li::after, 
+.tree li .node:hover+ul li::before, 
+.tree li .node:hover+ul::before, 
+.tree li .node:hover+ul ul::before{
     border-color:  #94a0b4;
 }
 
+ul.levels
+{
+    margin:0;
+    padding:0;
+}
 
-.tree a.board
+.levels li.board { background-color: #d9f3ab; }
+.levels li.chief { background-color: #f3e6ab; }
+.levels li.director { background-color: #d7eefa; }
+.levels li.manager { background-color: #cdf0e7; }
+.levels li.technician { background-color: #f3d0b0; }
+.levels li.operator { background-color: #eeccf7; }
+
+.tree div.board
 {
 	background-color:#d9f3ab;
 }
 
-.tree a.chief
+.tree div.chief
 {
 	background-color:#f3e6ab;
 }
 
-.tree a.director
+.tree div.director
 {
 	background-color:#d7eefa;
 }
 
-.tree a.manager
+.tree div.manager
 {
 	background-color:#cdf0e7;
 }
 
-.tree a.technician
+.tree div.technician
 {
 	background-color:#f3d0b0;
 }
 
 
-.tree a.operator
+.tree div.operator
 {
 	background-color:#eeccf7;
 }
 
 
-.tree a.over
+.tree div.over
 {
 	background-color:#ff0000 !important;
 
 }
 
+.tree .node
+{
+    position:relative;
+}
+
+.tree a.delete
+{
+    position:absolute;
+    bottom:2px;
+    right:2px;
+}
+
+.row-list h2
+{
+    margin-bottom:30px;
+}
+
+.row-list .row + .row
+{
+    border-top:1px solid #ccc;
+    padding-top:20px;
+    margin-top:20px;
+}
